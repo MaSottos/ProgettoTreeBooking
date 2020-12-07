@@ -1,11 +1,10 @@
 package it.corsobackendtree.treebooking.views;
 
+import it.corsobackendtree.treebooking.Gender;
+
 import java.time.LocalDate;
 
 public class UserView {
-    public enum Gender {
-        MALE,FEMALE,OTHER;
-    }
 
     private final String username;
     private final String password;
