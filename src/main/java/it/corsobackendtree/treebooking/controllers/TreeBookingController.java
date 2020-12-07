@@ -28,5 +28,41 @@ public class TreeBookingController {
         return null;
     }
 
+    @PostMapping("/join/{eventid}")
+    EventView joinEvent(@PathVariable("eventid") Long eventId){
+        //cod201
+        return null;
+    }
+
+    @PostMapping("/unjoin/{eventid}")
+    EventView unjoinEvent(@PathVariable("eventid") Long eventId){
+        //cod201
+        return null;
+    }
+
+    @PostMapping("/event")
+    EventView createEvent(@RequestBody EventView event){
+        //cod201
+        return null;
+    }
+
+    @GetMapping("/event/{eventid}")
+    EventView getEventDetails(@PathVariable("eventid") Long eventId){
+        //cod200
+        return null;
+    }
+
+    @DeleteMapping("/event/{eventid}")
+    EventView cancelEvent(@PathVariable("eventid") Long eventId){
+        //cod200
+        return null;
+    }
+
+    @GetMapping("user/events")
+    List<EventView> getUserEvents(){
+        //cod200
+        return null;
+    }
+
 
 }
