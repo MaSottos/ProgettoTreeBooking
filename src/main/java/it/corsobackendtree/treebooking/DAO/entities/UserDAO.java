@@ -32,7 +32,7 @@ public class UserDAO {
     //constructors
     public UserDAO() {
     }
-    public UserDAO(String username, String name, String surname, LocalDate birthDate, Gender gender, String password) {
+    public UserDAO(String username, String password, String name, String surname, Gender gender, LocalDate birthDate) {
         this.username = username;
         this.name = name;
         this.surname = surname;
