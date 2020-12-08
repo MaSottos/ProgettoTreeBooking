@@ -1,18 +1,38 @@
 package it.corsobackendtree.treebooking.controllers;
 
+import it.corsobackendtree.treebooking.DAO.entities.UserDAO;
+import it.corsobackendtree.treebooking.DAO.repositories.UserRepo;
+import it.corsobackendtree.treebooking.models.UserModel;
+import it.corsobackendtree.treebooking.services.SecurityService;
+import it.corsobackendtree.treebooking.services.UserService;
 import it.corsobackendtree.treebooking.views.EventView;
 import it.corsobackendtree.treebooking.views.UserView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class TreeBookingController {
+    @Autowired private UserRepo userRepo;
     @PostMapping("/user")
-    UserView signUpUser(@RequestBody UserView userToSignUp){
-
+    ResponseEntity<UserView> signUpUser(@RequestBody UserView userToSignUp,
+                              @Autowired UserService userService,
+                              @Autowired SecurityService securityService){
         //cod 201
-        return null;
+        UserModel model = userService.signUpUser(userToSignUp, securityService);
+        UserDAO userDB = new UserDAO(model.getUsername(),
+                model.getPassword(),
+                model.getName(),
+                model.getSurname(),
+                model.getGender(),
+                model.getBirthDate());
+        //TODO: cookie
+        userRepo.save(userDB);
+        return new ResponseEntity<>(userToSignUp,new HttpHeaders(), HttpStatus.CREATED);
     }
 
 
