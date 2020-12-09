@@ -1,12 +1,8 @@
 package it.corsobackendtree.treebooking.DAO.entities;
 
 import javax.persistence.*;
-
 @Entity
 public class CookieAuthDAO {
-=======
-import javax.persistence.*;
-
     @Id
     @Column(name = "user_id")
     private Long id;
