@@ -19,4 +19,12 @@ public class UserService {
         return modello;
     }
 
+    public boolean checkPassword(String password, String passwordCriptata, SecurityService service){
+        String passToCheck = service.computeHash(password);
+        if (passToCheck.equals(passwordCriptata)){
+            return true;
+        }else return false;
+
+    }
+
 }
