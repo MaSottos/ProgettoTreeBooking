@@ -4,6 +4,8 @@ import javax.persistence.*;
 
 @Entity
 public class CookieAuthDAO {
+=======
+import javax.persistence.*;
 
     @Id
     @Column(name = "user_id")

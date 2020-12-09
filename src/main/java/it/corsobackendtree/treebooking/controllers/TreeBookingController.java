@@ -37,7 +37,6 @@ public class TreeBookingController {
         return new ResponseEntity<>(userToSignUp,new HttpHeaders(), HttpStatus.CREATED);
     }
 
-
     @GetMapping("/login")
     ResponseEntity<UserView> logIn(@RequestParam(name = "username") String username,
                                    @RequestParam(name = "password") String password,
