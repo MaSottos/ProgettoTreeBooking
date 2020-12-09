@@ -37,7 +37,6 @@ public class TreeBookingController {
         return new ResponseEntity<>(userToSignUp,new HttpHeaders(), HttpStatus.CREATED);
     }
 
-
     @GetMapping("/login")
     ResponseEntity<UserView> logIn(@RequestParam(name = "username") String username,
                                    @RequestParam(name = "password") String password,
@@ -46,7 +45,7 @@ public class TreeBookingController {
        Optional<UserDAO> optUtenteTrovato = userRepo.findByUsername(username);
         //cod 200
         if(optUtenteTrovato.isPresent()){
-            if(userService.checkPassword(password, optUtenteTrovato.get().getPassword(), securityService){
+            if(userService.checkPassword(password, optUtenteTrovato.get().getPassword(), securityService)){
                 //cookie
             }else{
                 return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
