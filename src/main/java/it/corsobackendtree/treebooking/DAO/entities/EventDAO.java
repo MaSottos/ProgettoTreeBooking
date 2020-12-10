@@ -1,7 +1,6 @@
 package it.corsobackendtree.treebooking.DAO.entities;
 
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
