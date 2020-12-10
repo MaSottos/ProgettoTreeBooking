@@ -8,7 +8,9 @@ public class CookieAuthDAO {
     @Id
     @Column(name = "user_id")
     private UUID id;
-    private String cookieAuth;
+
+    private String cookieauth;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
@@ -17,16 +19,25 @@ public class CookieAuthDAO {
     public CookieAuthDAO() {
     }
 
-    public CookieAuthDAO(String cookieAuth, UserDAO user) {
-        this.cookieAuth = cookieAuth;
+    public CookieAuthDAO(String cookieauth, UserDAO user) {
+        this.cookieauth = cookieauth;
         this.user = user;
     }
 
-    public String getCookieAuth() {
-        return cookieAuth;
+    public UUID getId() {
+        return id;
     }
-
+    public String getCookieauth() {
+        return cookieauth;
+    }
     public UserDAO getUser() {
         return user;
+    }
+
+    public void setCookieauth(String cookieauth) {
+        this.cookieauth = cookieauth;
+    }
+    public void setUser(UserDAO user) {
+        this.user = user;
     }
 }
