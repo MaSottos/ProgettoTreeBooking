@@ -28,6 +28,9 @@ public class UserDAO {
     private final List<EventDAO> events = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<BookingDAO> userReservations = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private CookieAuthDAO cookieAuthDAO;
 
     //constructors
     public UserDAO() {
@@ -70,6 +73,9 @@ public class UserDAO {
     public List<BookingDAO> getUserReservations() {
         return userReservations;
     }
+    public CookieAuthDAO getCookieAuthDAO() {
+        return cookieAuthDAO;
+    }
 
     //setters
     public void setUsername(String username) {
@@ -89,6 +95,9 @@ public class UserDAO {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    public void setCookieAuthDAO(CookieAuthDAO cookieAuthDAO) {
+        this.cookieAuthDAO = cookieAuthDAO;
     }
 
     //hashcode&equals
