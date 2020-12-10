@@ -8,6 +8,7 @@ import it.corsobackendtree.treebooking.views.UserView;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -47,6 +48,10 @@ public class UserService {
             return headers;
         }
 
+    }
+    public CookieAuthDAO isLogged(String auth, CookieAuthRepo cr){
+        Optional<CookieAuthDAO> optCookie = cr.findByCookie(auth);
+        return optCookie.orElse(null);
     }
 
 }
