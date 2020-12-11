@@ -50,4 +50,17 @@ public class EventView {
 	public Boolean getJoined() {
 		return joined;
 	}
+
+	@Override
+	public String toString() {
+		return "EventView{" +
+				"eventid=" + eventid +
+				", owned=" + owned +
+				", joined=" + joined +
+				", name='" + name + '\'' +
+				", date=" + date +
+				", place='" + place + '\'' +
+				", capacity=" + capacity +
+				'}';
+	}
 }
