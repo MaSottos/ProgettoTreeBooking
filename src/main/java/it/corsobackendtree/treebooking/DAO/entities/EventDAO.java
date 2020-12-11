@@ -1,5 +1,6 @@
 package it.corsobackendtree.treebooking.DAO.entities;
 
+import org.apache.catalina.User;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -82,7 +83,8 @@ public class EventDAO {
     public void setOwner(UserDAO owner) {
         this.owner = owner;
     }
-    public void addUserReservation(UserDAO owner) { eventReservations.add(new BookingDAO(owner, this)); }
+    public void addUserReservation(UserDAO user) { eventReservations.add(new BookingDAO(user, this)); }
+    public void removeUserReservation(BookingDAO bookingDAO) { eventReservations.remove(bookingDAO); }
 
     //hashcode&equals
     @Override

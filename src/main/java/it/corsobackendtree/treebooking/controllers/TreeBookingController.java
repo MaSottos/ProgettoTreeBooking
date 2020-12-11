@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -142,8 +143,11 @@ public class TreeBookingController {
             if(eventDAO.getOwner().equals(user)) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
             BookingId bookingId = new BookingId(user, eventDAO);
-            bookingRepo.deleteById(bookingId);
-            return new ResponseEntity<>(eventService.getEventView(eventDAO, user),HttpStatus.CREATED);
+            Optional<BookingDAO> optBookingDAO = bookingRepo.findById(bookingId);
+            if(optBookingDAO.isPresent()) {
+                eventDAO.removeUserReservation(optBookingDAO.get());
+                return new ResponseEntity<>(eventService.getEventView(eventDAO, user),HttpStatus.CREATED);
+            } else return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
