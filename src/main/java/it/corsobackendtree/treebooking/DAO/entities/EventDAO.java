@@ -82,7 +82,7 @@ public class EventDAO {
     public void setOwner(UserDAO owner) {
         this.owner = owner;
     }
-    public void addOwnerToReservations(UserDAO owner) { eventReservations.add(new BookingDAO(owner, this)); }
+    public void addUserReservation(UserDAO owner) { eventReservations.add(new BookingDAO(owner, this)); }
 
     //hashcode&equals
     @Override
