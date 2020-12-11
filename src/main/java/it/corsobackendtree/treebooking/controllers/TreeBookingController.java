@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +95,7 @@ public class TreeBookingController {
         }
 
         UserDAO user = cookieAuthDAO.getUser();
-        List<EventDAO> listEventDAO = eventRepo.findByCapacityGreaterThanZero(LocalDateTime.now());
+        List<EventDAO> listEventDAO = eventRepo.findByAvailableCapacityAndDatetime(LocalDateTime.now());
         List<EventView> response = listEventDAO.stream().filter(eventDAO -> {
            boolean match = eventDAO.getEventReservations().stream().anyMatch(b->b.getUser().equals(user));
            return !match;
@@ -144,7 +143,7 @@ public class TreeBookingController {
 
             BookingId bookingId = new BookingId(user, eventDAO);
             Optional<BookingDAO> optBookingDAO = bookingRepo.findById(bookingId);
-            
+
             if(optBookingDAO.isPresent()) {
                 eventDAO.removeUserReservation(optBookingDAO.get());
                 eventRepo.save(eventDAO);
