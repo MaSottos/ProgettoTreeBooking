@@ -2,7 +2,6 @@ package it.corsobackendtree.treebooking.DAO.entities;
 
 import it.corsobackendtree.treebooking.Gender;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
