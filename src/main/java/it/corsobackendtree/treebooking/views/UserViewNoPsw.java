@@ -6,31 +6,26 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class UserView {
+public class UserViewNoPsw {
     public static ZoneId defaultZoneId = ZoneId.systemDefault();
     private final String username;
     private final String name;
     private final String surname;
     private final Date birthDate;
     private final Gender gender;
-    private final String password;
 
     //Constructor
-    public UserView(String username, String name, String surname, LocalDate birthDate, Gender gender, String password) {
+    public UserViewNoPsw(String username, String name, String surname, LocalDate birthDate, Gender gender) {
         this.username = username;
         this.name = name;
         this.surname = surname;
-        this.birthDate = Date.from(birthDate.atStartOfDay(defaultZoneId).toInstant());
+        this.birthDate = Date.from(birthDate.atStartOfDay(defaultZoneId).toInstant());;
         this.gender = gender;
-        this.password = password;
     }
 
     //Getters
     public String getUsername() {
         return username;
-    }
-    public String getPassword() {
-        return password;
     }
     public String getName() {
         return name;
