@@ -5,14 +5,10 @@ import it.corsobackendtree.treebooking.DAO.entities.UserDAO;
 import it.corsobackendtree.treebooking.DAO.repositories.CookieAuthRepo;
 import it.corsobackendtree.treebooking.models.UserModel;
 import it.corsobackendtree.treebooking.views.UserView;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
