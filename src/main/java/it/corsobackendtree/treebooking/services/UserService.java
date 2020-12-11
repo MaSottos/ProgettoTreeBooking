@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,7 +23,9 @@ public class UserService {
                 user.getName(),
                 user.getSurname(),
                 user.getGender(),
-                user.getBirthDate());
+                user.getBirthDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate());
     }
 
     public boolean checkPassword(String password, String passwordCriptata, SecurityService service){
