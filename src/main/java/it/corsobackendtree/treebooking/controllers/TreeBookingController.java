@@ -15,6 +15,7 @@ import it.corsobackendtree.treebooking.services.SecurityService;
 import it.corsobackendtree.treebooking.services.UserService;
 import it.corsobackendtree.treebooking.views.EventView;
 import it.corsobackendtree.treebooking.views.UserView;
+import it.corsobackendtree.treebooking.views.UserViewNoPsw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class TreeBookingController {
     @Autowired private BookingRepo bookingRepo;
 
     @PostMapping("/user")
-    ResponseEntity<UserView> signUpUser(@RequestBody UserView userToSignUp,
+    ResponseEntity<UserViewNoPsw> signUpUser(@RequestBody UserView userToSignUp,
                                         @Autowired UserService userService,
                                         @Autowired SecurityService securityService,
                                         HttpServletResponse response){
@@ -52,11 +53,13 @@ public class TreeBookingController {
                 model.getBirthDate());
         userRepo.save(userDB);
         userService.cookieGen(cookieAuthRepo,userDB,true, response);
-        return new ResponseEntity<>(userToSignUp, HttpStatus.CREATED);
+        return new ResponseEntity<>( new UserViewNoPsw(userToSignUp.getUsername(),
+                userToSignUp.getName(), userToSignUp.getSurname(), userToSignUp.getBirthDate(),
+                userToSignUp.getGender()) , HttpStatus.CREATED);
     }
 
     @GetMapping("/login")
-    ResponseEntity<UserView> logIn(@RequestParam(name = "username") String username,
+    ResponseEntity<UserViewNoPsw> logIn(@RequestParam(name = "username") String username,
                                    @RequestParam(name = "password") String password,
                                    @Autowired UserService userService,
                                    @Autowired SecurityService securityService,
@@ -66,10 +69,11 @@ public class TreeBookingController {
             UserDAO user = optUtenteTrovato.get();
             if(userService.checkPassword(password, user.getPassword(), securityService)){
                 userService.cookieGen(cookieAuthRepo,user,false,response);
-                return new ResponseEntity<>(new UserView(user.getUsername(),"",user.getName(),
+                return new ResponseEntity<>(new UserViewNoPsw(user.getUsername(),
+                                            user.getName(),
                                             user.getSurname(),
-                                            user.getGender(),
-                                            user.getBirthDate()),
+                                            user.getBirthDate(),
+                                            user.getGender()),
                                             HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
