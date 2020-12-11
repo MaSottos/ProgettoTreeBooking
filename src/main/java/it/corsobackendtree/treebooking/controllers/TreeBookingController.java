@@ -17,23 +17,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+//@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 public class TreeBookingController {
     @Autowired private CookieAuthRepo cookieAuthRepo;
     @Autowired private UserRepo userRepo;
     @Autowired private EventRepo eventRepo;
+
     @PostMapping("/user")
     ResponseEntity<UserView> signUpUser(@RequestBody UserView userToSignUp,
-                              @Autowired UserService userService,
-                              @Autowired SecurityService securityService){
-        //cod 201
+                                        @Autowired UserService userService,
+                                        @Autowired SecurityService securityService,
+                                        HttpServletResponse response){
         Optional<UserDAO> optUser = userRepo.findByUsername(userToSignUp.getUsername());
-        if (optUser.isPresent()) return new ResponseEntity<>(null,
-                                                            new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        if (optUser.isPresent()) return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         UserModel model = userService.signUpUser(userToSignUp, securityService);
         UserDAO userDB = new UserDAO(model.getUsername(),
                 model.getPassword(),
@@ -42,48 +44,51 @@ public class TreeBookingController {
                 model.getGender(),
                 model.getBirthDate());
         userRepo.save(userDB);
-        return new ResponseEntity<>(userToSignUp,userService.cookieGen(cookieAuthRepo,userDB,true), HttpStatus.CREATED);
+        userService.cookieGen(cookieAuthRepo,userDB,true, response);
+        return new ResponseEntity<>(userToSignUp, HttpStatus.CREATED);
     }
 
     @GetMapping("/login")
     ResponseEntity<UserView> logIn(@RequestParam(name = "username") String username,
                                    @RequestParam(name = "password") String password,
                                    @Autowired UserService userService,
-                                   @Autowired SecurityService securityService){
+                                   @Autowired SecurityService securityService,
+                                   HttpServletResponse response){
         Optional<UserDAO> optUtenteTrovato = userRepo.findByUsername(username);
         if(optUtenteTrovato.isPresent()){
             UserDAO user = optUtenteTrovato.get();
             if(userService.checkPassword(password, user.getPassword(), securityService)){
-                //cookie
+                userService.cookieGen(cookieAuthRepo,user,false,response);
                 return new ResponseEntity<>(new UserView(user.getUsername(),"",user.getName(),
                                             user.getSurname(),
                                             user.getGender(),
                                             user.getBirthDate()),
-                                            userService.cookieGen(cookieAuthRepo,user,false),
                                             HttpStatus.OK);
             }else{
-                return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
 
         }else{
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
     @GetMapping("/events")
     ResponseEntity<List<EventView>> getListEvents(@CookieValue(value = "auth", defaultValue = "") String auth,
-                                                  @Autowired UserService userService,
-                                                  @Autowired CookieAuthRepo cookieAuthRepo){
-        CookieAuthDAO cookieAuthDAO = userService.isLogged(auth, cookieAuthRepo);
-        if(cookieAuthDAO == null) return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+                                                  @Autowired UserService userService){
+        /*Controllo autenticazione utente*/
+        CookieAuthDAO cookieAuthDAO = userService.isLogged(auth,cookieAuthRepo);
+        if(cookieAuthDAO == null){
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+        }
+        
         UserDAO user = cookieAuthDAO.getUser();
         List<EventDAO> listEventDAO = eventRepo.findByCapacityGreaterThan(0);
         List<EventView> response = listEventDAO.stream().filter(eventDAO -> {
            boolean match = eventDAO.getEventReservations().stream().anyMatch(b->b.getUser().equals(user));
            return !match;
-        }).map(eventDAO -> new EventView(eventDAO.getName(),
-                                                            eventDAO.getCapacity(),
-                                                            eventDAO.getPlace(),
-                                                            eventDAO.getDate())).collect(Collectors.toList());
+        }).map(eventDAO -> new EventView(eventDAO.getName(), eventDAO.getCapacity(), eventDAO.getPlace(),
+                eventDAO.getDate())).collect(Collectors.toList());
         return new ResponseEntity<>(response,new HttpHeaders(),HttpStatus.OK);
     }
 

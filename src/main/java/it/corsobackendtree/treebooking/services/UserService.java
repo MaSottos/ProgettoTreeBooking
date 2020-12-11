@@ -6,8 +6,13 @@ import it.corsobackendtree.treebooking.DAO.repositories.CookieAuthRepo;
 import it.corsobackendtree.treebooking.models.UserModel;
 import it.corsobackendtree.treebooking.views.UserView;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,42 +21,37 @@ public class UserService {
     public UserModel signUpUser(UserView user, SecurityService service){
         String passwordCriptata = service.computeHash(user.getPassword());
 
-        UserModel modello = new UserModel(user.getUsername(),
+        return new UserModel(user.getUsername(),
                 passwordCriptata,
                 user.getName(),
                 user.getSurname(),
                 user.getGender(),
                 user.getBirthDate());
-
-        return modello;
     }
 
     public boolean checkPassword(String password, String passwordCriptata, SecurityService service){
         String passToCheck = service.computeHash(password);
-        if (passToCheck.equals(passwordCriptata)){
-            return true;
-        }else return false;
+        return passToCheck.equals(passwordCriptata);
 
     }
-    public HttpHeaders cookieGen(CookieAuthRepo cookieAuthRepo, UserDAO user, boolean reg){
+    public void cookieGen(CookieAuthRepo cookieAuthRepo, UserDAO user, boolean reg, HttpServletResponse response){
+        String cookieValue = "";
         if (reg||user.getCookieAuthDAO() == null) {
-            String cookieValue = UUID.randomUUID().toString();
+            cookieValue = UUID.randomUUID().toString();
             CookieAuthDAO cookie = new CookieAuthDAO(cookieValue, user);
             cookieAuthRepo.save(cookie);
             user.setCookieAuthDAO(cookie);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Set-Cookie", "auth=" + cookieValue + "; Max-Age=604800; Path=/; Secure; SameSite=None");
-            return headers;
         }else{
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Set-Cookie", "auth=" + user.getCookieAuthDAO() + "; Max-Age=604800; Path=/; Secure; SameSite=None");
-            return headers;
+            cookieValue = user.getCookieAuthDAO().getCookieauth();
         }
-
-    }
-    public CookieAuthDAO isLogged(String auth, CookieAuthRepo cr){
-        Optional<CookieAuthDAO> optCookie = cr.findByCookie(auth);
-        return optCookie.orElse(null);
+        Cookie auth = new Cookie("auth", cookieValue);
+        auth.setMaxAge(7*24*60*60); // 7 giorni
+        response.addCookie(auth);
     }
 
+    public CookieAuthDAO isLogged(String auth, CookieAuthRepo cookieAuthRepo){
+        cookieAuthRepo.findByCookieauth(auth);
+        Optional<CookieAuthDAO> optCookieAuthDAO = cookieAuthRepo.findByCookieauth(auth);
+        return optCookieAuthDAO.orElseGet(null);
+    }
 }

@@ -2,7 +2,6 @@ package it.corsobackendtree.treebooking.DAO;
 
 import it.corsobackendtree.treebooking.DAO.entities.EventDAO;
 import it.corsobackendtree.treebooking.DAO.entities.UserDAO;
-
 import java.io.Serializable;
 import java.util.Objects;
 
