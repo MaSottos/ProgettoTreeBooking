@@ -23,11 +23,10 @@ public class BookingId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookingId bookingId = (BookingId) o;
-        return Objects.equals(user, bookingId.user) &&
-                Objects.equals(event, bookingId.event);
+        return user.equals(bookingId.user) && event.equals(bookingId.event);
     }
     @Override
     public int hashCode() {
-        return Objects.hash(user, event);
+        return Objects.hash(user.getId(), event.getId());
     }
 }
