@@ -1,7 +1,6 @@
 package it.corsobackendtree.treebooking.DAO.entities;
 
 import it.corsobackendtree.treebooking.DAO.BookingId;
-
 import javax.persistence.*;
 
 @Entity

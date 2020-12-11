@@ -2,7 +2,6 @@ package it.corsobackendtree.treebooking.DAO.entities;
 
 import it.corsobackendtree.treebooking.Gender;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,11 +27,14 @@ public class UserDAO {
     private final List<EventDAO> events = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<BookingDAO> userReservations = new ArrayList<>();
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private CookieAuthDAO cookieAuthDAO;
 
     //constructors
     public UserDAO() {
     }
-    public UserDAO(String username, String name, String surname, LocalDate birthDate, Gender gender, String password) {
+    public UserDAO(String username, String password, String name, String surname, Gender gender, LocalDate birthDate) {
         this.username = username;
         this.name = name;
         this.surname = surname;
@@ -70,6 +72,9 @@ public class UserDAO {
     public List<BookingDAO> getUserReservations() {
         return userReservations;
     }
+    public CookieAuthDAO getCookieAuthDAO() {
+        return cookieAuthDAO;
+    }
 
     //setters
     public void setUsername(String username) {
@@ -89,6 +94,9 @@ public class UserDAO {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    public void setCookieAuthDAO(CookieAuthDAO cookieAuthDAO) {
+        this.cookieAuthDAO = cookieAuthDAO;
     }
 
     //hashcode&equals

@@ -1,7 +1,6 @@
 package it.corsobackendtree.treebooking.DAO.entities;
 
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class EventDAO {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
     private String name;
-    private LocalDateTime date;
+    private LocalDateTime datetime;
     private String place;
     private Integer capacity;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,9 +25,9 @@ public class EventDAO {
     private final List<BookingDAO> eventReservations = new ArrayList<>();
 
     //constructors
-    public EventDAO(String name, LocalDateTime date, String place, Integer capacity, UserDAO owner) {
+    public EventDAO(String name, LocalDateTime datetime, String place, Integer capacity, UserDAO owner) {
         this.name = name;
-        this.date = date;
+        this.datetime = datetime;
         this.place = place;
         this.capacity = capacity;
         this.owner = owner;
@@ -43,8 +42,8 @@ public class EventDAO {
     public String getName() {
         return name;
     }
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getDatetime() {
+        return datetime;
     }
     public String getPlace() {
         return place;
@@ -63,8 +62,8 @@ public class EventDAO {
     public void setName(String name) {
         this.name = name;
     }
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDatetime(LocalDateTime date) {
+        this.datetime = date;
     }
     public void setPlace(String place) {
         this.place = place;
@@ -75,6 +74,7 @@ public class EventDAO {
     public void setOwner(UserDAO owner) {
         this.owner = owner;
     }
+    public void addOwnerToReservations(UserDAO owner) { eventReservations.add(new BookingDAO(owner, this)); }
 
     //hashcode&equals
     @Override
