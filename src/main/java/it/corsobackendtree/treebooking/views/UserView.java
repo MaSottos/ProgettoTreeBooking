@@ -3,13 +3,15 @@ package it.corsobackendtree.treebooking.views;
 import it.corsobackendtree.treebooking.Gender;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class UserView {
-
+    public static ZoneId defaultZoneId = ZoneId.systemDefault();
     private final String username;
     private final String name;
     private final String surname;
-    private final LocalDate birthDate;
+    private final Date birthDate;
     private final Gender gender;
     private final String password;
 
@@ -18,7 +20,7 @@ public class UserView {
         this.username = username;
         this.name = name;
         this.surname = surname;
-        this.birthDate = birthDate;
+        this.birthDate = Date.from(birthDate.atStartOfDay(defaultZoneId).toInstant());
         this.gender = gender;
         this.password = password;
     }
@@ -39,7 +41,7 @@ public class UserView {
     public Gender getGender() {
         return gender;
     }
-    public LocalDate getBirthDate() {
+    public Date getBirthDate() {
         return birthDate;
     }
 }
