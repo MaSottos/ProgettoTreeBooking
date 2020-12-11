@@ -1,8 +1,6 @@
 package it.corsobackendtree.treebooking.models;
 
-
 import it.corsobackendtree.treebooking.Gender;
-
 import java.time.LocalDate;
 
 public class UserModel {
