@@ -58,6 +58,14 @@ public class EventDAO {
         return eventReservations;
     }
 
+    public Boolean getOwned(UserDAO user){
+        return owner.equals(user);
+    }
+
+    public Boolean getJoined(UserDAO user){
+        return eventReservations.stream().anyMatch(b->b.getUser().equals(user));
+    }
+
     //setters
     public void setName(String name) {
         this.name = name;
