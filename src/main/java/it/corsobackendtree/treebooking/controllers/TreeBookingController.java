@@ -83,7 +83,7 @@ public class TreeBookingController {
         }
         
         UserDAO user = cookieAuthDAO.getUser();
-        List<EventDAO> listEventDAO = eventRepo.findByCapacityGreaterThan(0);
+        List<EventDAO> listEventDAO = eventRepo.findByCapacityGreaterThanZero();
         List<EventView> response = listEventDAO.stream().filter(eventDAO -> {
            boolean match = eventDAO.getEventReservations().stream().anyMatch(b->b.getUser().equals(user));
            return !match;
