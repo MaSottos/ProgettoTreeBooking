@@ -144,8 +144,10 @@ public class TreeBookingController {
 
             BookingId bookingId = new BookingId(user, eventDAO);
             Optional<BookingDAO> optBookingDAO = bookingRepo.findById(bookingId);
+            
             if(optBookingDAO.isPresent()) {
                 eventDAO.removeUserReservation(optBookingDAO.get());
+                eventRepo.save(eventDAO);
                 return new ResponseEntity<>(eventService.getEventView(eventDAO, user),HttpStatus.CREATED);
             } else return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }else{
