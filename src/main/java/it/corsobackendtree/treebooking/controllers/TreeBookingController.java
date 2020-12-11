@@ -53,9 +53,9 @@ public class TreeBookingController {
                 model.getBirthDate());
         userRepo.save(userDB);
         userService.cookieGen(cookieAuthRepo,userDB,true, response);
-        return new ResponseEntity<>( new UserViewNoPsw(userToSignUp.getUsername(),
-                userToSignUp.getName(), userToSignUp.getSurname(), userToSignUp.getBirthDate(),
-                userToSignUp.getGender()) , HttpStatus.CREATED);
+        return new ResponseEntity<>( new UserViewNoPsw(userDB.getUsername(),
+                userDB.getName(), userDB.getSurname(), userDB.getBirthDate(),
+                userDB.getGender()) , HttpStatus.CREATED);
     }
 
     @GetMapping("/login")
