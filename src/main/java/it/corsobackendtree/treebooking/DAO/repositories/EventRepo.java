@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface EventRepo extends CrudRepository<EventDAO, UUID> {
     @Query("SELECT e FROM EventDAO e WHERE e.capacity-e.eventReservations.size > 0 AND e.datetime > ?1")
-    List<EventDAO> findByCapacityGreaterThanZero(LocalDateTime now);
+    List<EventDAO> findByAvailableCapacityAndDatetime(LocalDateTime now);
 
     List<EventDAO> findByDatetimeAfter(LocalDateTime now);
 }
