@@ -5,6 +5,8 @@ import it.corsobackendtree.treebooking.DAO.entities.UserDAO;
 import it.corsobackendtree.treebooking.DAO.repositories.CookieAuthRepo;
 import it.corsobackendtree.treebooking.models.UserModel;
 import it.corsobackendtree.treebooking.views.UserView;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -43,9 +45,11 @@ public class UserService {
         }else{
             cookieValue = user.getCookieAuthDAO().getCookieauth();
         }
-        Cookie auth = new Cookie("auth", cookieValue);
+        /*Cookie auth = new Cookie("auth", cookieValue);
         auth.setMaxAge(7*24*60*60); // 7 giorni
-        response.addCookie(auth);
+        response.addCookie(auth);*/
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                ResponseCookie.from("auth", cookieValue).maxAge(7*24*60*60).secure(true).sameSite("None").build().toString());
     }
 
     public CookieAuthDAO isLogged(String auth, CookieAuthRepo cookieAuthRepo){
