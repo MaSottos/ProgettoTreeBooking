@@ -49,7 +49,6 @@ public class UserService {
     }
 
     public CookieAuthDAO isLogged(String auth, CookieAuthRepo cookieAuthRepo){
-        cookieAuthRepo.findByCookieauth(auth);
         Optional<CookieAuthDAO> optCookieAuthDAO = cookieAuthRepo.findByCookieauth(auth);
         return optCookieAuthDAO.orElseGet(null);
     }
