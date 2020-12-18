@@ -23,6 +23,8 @@ public class UserDAO {
     private LocalDate birthDate;
     private Gender gender;
     private String password;
+
+    private Integer salt;
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<EventDAO> events = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -34,14 +36,14 @@ public class UserDAO {
     //constructors
     public UserDAO() {
     }
-    public UserDAO(String username, String password, String name, String surname, Gender gender, LocalDate birthDate) {
+    public UserDAO(String username, String password, String name, String surname, Gender gender, LocalDate birthDate, Integer salt) {
         this.username = username;
         this.name = name;
         this.surname = surname;
         this.birthDate = birthDate;
         this.gender = gender;
         this.password = password;
-
+        this.salt=salt;
     }
 
     //getters
@@ -75,7 +77,9 @@ public class UserDAO {
     public CookieAuthDAO getCookieAuthDAO() {
         return cookieAuthDAO;
     }
-
+    public Integer getSalt() {
+        return salt;
+    }
     //setters
     public void setUsername(String username) {
         this.username = username;
@@ -98,6 +102,7 @@ public class UserDAO {
     public void setCookieAuthDAO(CookieAuthDAO cookieAuthDAO) {
         this.cookieAuthDAO = cookieAuthDAO;
     }
+    public void setSalt(Integer salt) { this.salt = salt;}
 
     //hashcode&equals
     @Override

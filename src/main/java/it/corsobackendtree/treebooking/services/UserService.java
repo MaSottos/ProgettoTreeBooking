@@ -13,12 +13,15 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.time.ZoneId;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
 public class UserService {
+    private static Random random = new Random();
     public UserModel signUpUser(UserView user, SecurityService service){
-        String passwordCriptata = service.computeHash(user.getPassword());
+        Integer salt =random.nextInt(51);
+        String passwordCriptata = service.computeHash(user.getPassword(),salt);
 
         return new UserModel(user.getUsername(),
                 passwordCriptata,
@@ -27,11 +30,12 @@ public class UserService {
                 user.getGender(),
                 user.getBirthDate().toInstant()
                 .atZone(ZoneId.systemDefault())
-                .toLocalDate());
+                .toLocalDate(),
+                salt);
     }
 
-    public boolean checkPassword(String password, String passwordCriptata, SecurityService service){
-        String passToCheck = service.computeHash(password);
+    public boolean checkPassword(String password, String passwordCriptata, SecurityService service, Integer salt){
+        String passToCheck = service.computeHash(password, salt);
         return passToCheck.equals(passwordCriptata);
 
     }
