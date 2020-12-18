@@ -10,15 +10,17 @@ public class UserModel {
     private final String surname;
     private final Gender gender;
     private final LocalDate birthDate;
+    private final Integer salt;
 
     //Constructor
-    public UserModel(String username, String password, String name, String surname, Gender gender, LocalDate birthDate) {
+    public UserModel(String username, String password, String name, String surname, Gender gender, LocalDate birthDate, Integer salt) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.gender = gender;
         this.birthDate = birthDate;
+        this.salt = salt;
     }
 
     //Getters
@@ -40,5 +42,7 @@ public class UserModel {
     public LocalDate getBirthDate() {
         return birthDate;
     }
-
+    public Integer getSalt() {
+        return salt;
+    }
 }

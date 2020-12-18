@@ -7,14 +7,15 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 public class SecurityService {
-    public String computeHash(String s){
+    public String computeHash(String s, Integer salt){
+        String mix = salt+s+salt;
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        byte[] digest = md.digest(s.getBytes());
+        byte[] digest = md.digest(mix.getBytes());
         BigInteger bi = new BigInteger(1, digest);
         String hash = bi.toString(16);
         return hash;
