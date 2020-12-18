@@ -65,7 +65,8 @@ public class TreeBookingController {
                     model.getName(),
                     model.getSurname(),
                     model.getGender(),
-                    model.getBirthDate());
+                    model.getBirthDate(),
+                    model.getSalt());
             userRepo.save(userDB);
             userService.cookieGen(cookieAuthRepo, userDB, true, response);
             return ResponseEntity.status(HttpStatus.CREATED).body(new UserViewNoPsw(userDB.getUsername(),
@@ -87,7 +88,7 @@ public class TreeBookingController {
         Optional<UserDAO> optUtenteTrovato = userRepo.findByUsername(username);
         if (optUtenteTrovato.isPresent()) {
             UserDAO user = optUtenteTrovato.get();
-            if (userService.checkPassword(password, user.getPassword(), securityService)) {
+            if (userService.checkPassword(password, user.getPassword(), securityService, user.getSalt())) {
                 userService.cookieGen(cookieAuthRepo, user, false, response);
                 return ResponseEntity.ok(new UserViewNoPsw(user.getUsername(),
                                 user.getName(),
