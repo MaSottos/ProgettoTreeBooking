@@ -5,18 +5,23 @@ import it.corsobackendtree.treebooking.DAO.entities.UserDAO;
 import it.corsobackendtree.treebooking.DAO.repositories.CookieAuthRepo;
 import it.corsobackendtree.treebooking.models.UserModel;
 import it.corsobackendtree.treebooking.views.UserView;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.time.ZoneId;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
 public class UserService {
+    private static Random random = new Random();
     public UserModel signUpUser(UserView user, SecurityService service){
-        String passwordCriptata = service.computeHash(user.getPassword());
+        Integer salt =random.nextInt(51);
+        String passwordCriptata = service.computeHash(user.getPassword(),salt);
 
         return new UserModel(user.getUsername(),
                 passwordCriptata,
@@ -25,11 +30,12 @@ public class UserService {
                 user.getGender(),
                 user.getBirthDate().toInstant()
                 .atZone(ZoneId.systemDefault())
-                .toLocalDate());
+                .toLocalDate(),
+                salt);
     }
 
-    public boolean checkPassword(String password, String passwordCriptata, SecurityService service){
-        String passToCheck = service.computeHash(password);
+    public boolean checkPassword(String password, String passwordCriptata, SecurityService service, Integer salt){
+        String passToCheck = service.computeHash(password, salt);
         return passToCheck.equals(passwordCriptata);
 
     }
@@ -43,9 +49,11 @@ public class UserService {
         }else{
             cookieValue = user.getCookieAuthDAO().getCookieauth();
         }
-        Cookie auth = new Cookie("auth", cookieValue);
+        /*Cookie auth = new Cookie("auth", cookieValue);
         auth.setMaxAge(7*24*60*60); // 7 giorni
-        response.addCookie(auth);
+        response.addCookie(auth);*/
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                ResponseCookie.from("auth", cookieValue).maxAge(7*24*60*60).secure(true).sameSite("None").build().toString());
     }
 
     public CookieAuthDAO isLogged(String auth, CookieAuthRepo cookieAuthRepo){
