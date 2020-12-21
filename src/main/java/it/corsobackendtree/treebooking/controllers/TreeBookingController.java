@@ -55,27 +55,12 @@ public class TreeBookingController {
                                              @Autowired UserService userService,
                                              @Autowired SecurityService securityService,
                                              HttpServletResponse response) {
-        logger.info("SONO QUI");
-        try{
-            Optional<UserDAO> optUser = userRepo.findByUsername(userToSignUp.getUsername());
-            if (optUser.isPresent()) return ResponseEntity.badRequest().body(null);
-            UserModel model = userService.signUpUser(userToSignUp, securityService);
-            UserDAO userDB = new UserDAO(model.getUsername(),
-                    model.getPassword(),
-                    model.getName(),
-                    model.getSurname(),
-                    model.getGender(),
-                    model.getBirthDate(),
-                    model.getSalt());
-            userRepo.save(userDB);
-            userService.cookieGen(cookieAuthRepo, userDB, true, response);
-            return ResponseEntity.status(HttpStatus.CREATED).body(new UserViewNoPsw(userDB.getUsername(),
-                    userDB.getName(), userDB.getSurname(), userDB.getBirthDate(),
-                    userDB.getGender()));
-        }catch (Exception e){
-            logger.info("CLASS: "+e.getClass().getName());
-            logger.info("MESSAGE: "+e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+        UserDAO userDAO = userService.signUpUser(userToSignUp, securityService, userRepo, cookieAuthRepo, response);
+        if (userDAO == null) return ResponseEntity.badRequest().body(null);
+        else {
+            return ResponseEntity.status(HttpStatus.CREATED).body(new UserViewNoPsw(userDAO.getUsername(),
+                    userDAO.getName(), userDAO.getSurname(), userDAO.getBirthDate(),
+                    userDAO.getGender()));
         }
     }
 
