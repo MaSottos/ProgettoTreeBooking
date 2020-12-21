@@ -3,10 +3,12 @@ package it.corsobackendtree.treebooking.services;
 import it.corsobackendtree.treebooking.DAO.entities.CookieAuthDAO;
 import it.corsobackendtree.treebooking.DAO.entities.UserDAO;
 import it.corsobackendtree.treebooking.DAO.repositories.CookieAuthRepo;
+import it.corsobackendtree.treebooking.DAO.repositories.UserRepo;
 import it.corsobackendtree.treebooking.models.UserModel;
 import it.corsobackendtree.treebooking.views.UserView;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -19,11 +21,15 @@ import java.util.UUID;
 @Service
 public class UserService {
     private static Random random = new Random();
-    public UserModel signUpUser(UserView user, SecurityService service){
+    public UserDAO signUpUser(UserView user, SecurityService service, UserRepo userRepo,
+                              CookieAuthRepo cookieAuthRepo, HttpServletResponse response){
+        Optional<UserDAO> optUser = userRepo.findByUsername(user.getUsername());
+        if (optUser.isPresent()) return null;
+
         Integer salt =random.nextInt(51);
         String passwordCriptata = service.computeHash(user.getPassword(),salt);
 
-        return new UserModel(user.getUsername(),
+        UserModel userModel = new UserModel(user.getUsername(),
                 passwordCriptata,
                 user.getName(),
                 user.getSurname(),
@@ -32,6 +38,17 @@ public class UserService {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate(),
                 salt);
+        UserDAO userDAO = new UserDAO(userModel.getUsername(),
+                userModel.getPassword(),
+                userModel.getName(),
+                userModel.getSurname(),
+                userModel.getGender(),
+                userModel.getBirthDate(),
+                userModel.getSalt());
+        userRepo.save(userDAO);
+        cookieGen(cookieAuthRepo, userDAO, true, response);
+
+        return userDAO;
     }
 
     public boolean checkPassword(String password, String passwordCriptata, SecurityService service, Integer salt){
