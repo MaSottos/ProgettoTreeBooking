@@ -36,7 +36,6 @@ class TreebookingApplicationTests {
 	@Autowired
 	SecurityService securityService;
 
-
 	@Test
 	void contextLoads() {
 	}
@@ -51,6 +50,17 @@ class TreebookingApplicationTests {
 		assertNotEquals(userViewTest.getPassword(), userDAOTest.getPassword());
 	}
 
+	@Test
+	void checkPasswordTest(){
+		String password ="password";
+		Integer salt = 5;
+		String cripted = securityService.computeHash(password, salt);
+		boolean test = userService.checkPassword(password, cripted, securityService, salt);
+		assertTrue(test);
+		boolean test_2 = userService.checkPassword("password2", cripted, securityService, salt);
+		assertFalse(test_2);
+	}
+
 	private UserView getMockUser(){
 		UserView userViewTest = mock(UserView.class);
 		when(userViewTest.getUsername()).thenReturn("TestUser");
@@ -62,5 +72,4 @@ class TreebookingApplicationTests {
 				LocalDate.of(1990,11,11).atStartOfDay(defaultZoneId).toInstant()));
 		return userViewTest;
 	}
-
 }

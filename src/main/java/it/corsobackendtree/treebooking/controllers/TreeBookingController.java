@@ -70,22 +70,15 @@ public class TreeBookingController {
                                         @Autowired UserService userService,
                                         @Autowired SecurityService securityService,
                                         HttpServletResponse response) {
-        Optional<UserDAO> optUtenteTrovato = userRepo.findByUsername(username);
-        if (optUtenteTrovato.isPresent()) {
-            UserDAO user = optUtenteTrovato.get();
-            if (userService.checkPassword(password, user.getPassword(), securityService, user.getSalt())) {
-                userService.cookieGen(cookieAuthRepo, user, false, response);
-                return ResponseEntity.ok(new UserViewNoPsw(user.getUsername(),
-                                user.getName(),
-                                user.getSurname(),
-                                user.getBirthDate(),
-                                user.getGender()));
-            } else {
-                return ResponseEntity.badRequest().body(null);
-            }
-
-        } else {
+        UserDAO userDAO = userService.loginUser(userRepo, cookieAuthRepo, username, password, securityService, response);
+        if(userDAO==null){
             return ResponseEntity.badRequest().body(null);
+        }else{
+            return ResponseEntity.ok(new UserViewNoPsw(userDAO.getUsername(),
+                    userDAO.getName(),
+                    userDAO.getSurname(),
+                    userDAO.getBirthDate(),
+                    userDAO.getGender()));
         }
     }
 
